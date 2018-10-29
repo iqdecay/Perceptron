@@ -52,14 +52,5 @@ func activation(f float64) float64 {
 	}
 }
 
-type Point struct {
-	X float64
-	Y float64
-}
-
-type colouredPoint struct {
-	Point
-	colour float64
-}
 
 func main() {}
