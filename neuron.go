@@ -60,11 +60,32 @@ func generateRGB() (float64, float64, float64){
 		return generateRGB()
 	}
 	return r, g, b
-
 }
 
-func main() {
+type RGB struct {
+	r, g, b float64
+}
 
+type Pixel struct {
+	RGB
+	colour int
+}
+
+func (p *Pixel) determineColour() {
+	if p.r > p.b && p.r > p.g {
+		p.colour = 0
+	}
+	if p.g > p.b && p.g > p.r {
+		p.colour = 1
+	}
+	if p.b > p.r && p.b > p.g {
+		p.colour = 2
+	}
+}
+
+
+func main() {
+	pixels
 
 
 
