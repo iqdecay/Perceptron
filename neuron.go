@@ -56,7 +56,7 @@ func generateRGB() (float64, float64, float64){
 	r := float64(rand.Intn(256))
 	g := float64(rand.Intn(256))
 	b := float64(rand.Intn(256))
-	if r == g or r == b or b == g {
+	if r == g || r == b || b == g {
 		return generateRGB()
 	}
 	return r, g, b
@@ -85,8 +85,18 @@ func (p *Pixel) determineColour() {
 
 
 func main() {
-	pixels
+	var pixels []Pixel
+	n := 100
+	for i := 0; i< n; i++ {
+		r, g, b := generateRGB()
+		pixel := Pixel{RGB{r, g, b}, -1}
+		pixel.determineColour()
+		pixels = append(pixels, pixel)
+	}
+	for _, p := range pixels {
+		fmt.Println(p.r,p.g,p.b,p.colour)
 
+	}
 
 
 
