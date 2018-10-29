@@ -52,5 +52,27 @@ func activation(f float64) float64 {
 	}
 }
 
+func generateRGB() (float64, float64, float64){
+	r := float64(rand.Intn(256))
+	g := float64(rand.Intn(256))
+	b := float64(rand.Intn(256))
+	if r == g or r == b or b == g {
+		return generateRGB()
+	}
+	return r, g, b
 
-func main() {}
+}
+
+func main() {
+
+
+
+
+
+
+
+
+
+
+
+}
