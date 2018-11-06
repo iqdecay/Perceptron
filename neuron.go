@@ -68,18 +68,18 @@ type RGB struct {
 
 type Pixel struct {
 	RGB
-	colour int
+	colour [3]int
 }
 
 func (p *Pixel) determineColour() {
 	if p.r > p.b && p.r > p.g {
-		p.colour = 0
+		p.colour = [3]int{1, 0, 0}
 	}
 	if p.g > p.b && p.g > p.r {
-		p.colour = 1
+		p.colour = [3]int{0, 1, 0}
 	}
 	if p.b > p.r && p.b > p.g {
-		p.colour = 2
+		p.colour = [3]int{0, 0, 1}
 	}
 }
 
@@ -89,7 +89,7 @@ func main() {
 	n := 100
 	for i := 0; i< n; i++ {
 		r, g, b := generateRGB()
-		pixel := Pixel{RGB{r, g, b}, -1}
+		pixel := Pixel{RGB{r, g, b}, [3]int{0, 0, 0}}
 		pixel.determineColour()
 		pixels = append(pixels, pixel)
 	}
