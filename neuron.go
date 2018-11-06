@@ -68,18 +68,18 @@ type RGB struct {
 
 type Pixel struct {
 	RGB
-	colour int
+	colour string
 }
 
 func (p *Pixel) determineColour() {
 	if p.r > p.b && p.r > p.g {
-		p.colour = 0
+		p.colour = "red"
 	}
 	if p.g > p.b && p.g > p.r {
-		p.colour = 1
+		p.colour = "green"
 	}
 	if p.b > p.r && p.b > p.g {
-		p.colour = 2
+		p.colour = "blue"
 	}
 }
 
@@ -94,17 +94,11 @@ func main() {
 		pixel.determineColour()
 		pixels = append(pixels, pixel)
 	}
-	for currentColour := range []int{0,1,2} {
-		p := Perceptron{3, []float64{0.0, 0.0}, activation, 0.01}
-		for _, pixel := range pixels {
-			input_vector := []float64{pixel.r, pixel.g, pixel.b}
-			target := 0
-			if pixel.colour == currentColour {
-				target = 1
-			}
-			
-		}
-}
+	// Create a perceptron for each colour
+	defaultWeights := []float64{0.0, 0.0, }
+	pRed := Perceptron{3, defaultWeights, 0, activation, 0.01}
+	pGreen := Perceptron{3, defaultWeights, 0, activation, 0.01}
+	pBlue := Perceptron{3, defaultWeights, 0, activation, 0.01}
 
 
 
