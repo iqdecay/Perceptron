@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+    "time"
 )
 
 func max(a float64, values ...float64) float64 {
@@ -97,6 +98,8 @@ func (p *Pixel) determineColour() {
 }
 
 func main() {
+    seed := time.Now().UnixNano()
+    rand.Seed(seed)
 	var pixels []Pixel
 	n := 10000
 	// Generate the training set
@@ -108,9 +111,10 @@ func main() {
 	}
 	// Create a perceptron for each colour
 	defaultWeights := []float64{0.0, 0.0, 0.0}
-	neuronRed := Perceptron{3, defaultWeights, 0, activation, 0.01}
-	neuronGreen := Perceptron{3, defaultWeights, 0, activation, 0.01}
-	neuronBlue := Perceptron{3, defaultWeights, 0, activation, 0.01}
+	learningRate := 0.01
+	neuronRed := Perceptron{3, defaultWeights, 0, activation, learningRate}
+	neuronGreen := Perceptron{3, defaultWeights, 0, activation, learningRate}
+	neuronBlue := Perceptron{3, defaultWeights, 0, activation, learningRate}
 	// Training all the perceptrons
 	for _, p := range pixels {
 		inputVector := []float64{p.r, p.g, p.b}
@@ -129,10 +133,14 @@ func main() {
 		(&neuronRed).updateWeights(inputVector, targetRed)
 		(&neuronGreen).updateWeights(inputVector, targetGreen)
 		(&neuronBlue).updateWeights(inputVector, targetBlue)
+
 	}
+    fmt.Println(neuronRed.weights)
+    fmt.Println(neuronBlue.weights)
+    fmt.Println(neuronGreen.weights)
 	// Generate the testing set
 	var pixelsTest []Pixel
-	k := 50
+	k := 100
 	for i := 0; i < k; i++ {
 		r, g, b := generateRGB()
 		pixel := Pixel{RGB{r, g, b}, ""}
