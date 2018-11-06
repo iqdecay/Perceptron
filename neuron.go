@@ -94,15 +94,16 @@ func main() {
 		pixel.determineColour()
 		pixels = append(pixels, pixel)
 	}
-	for i := range []int{0,1,2} {
+	for currentColour := range []int{0,1,2} {
 		p := Perceptron{3, []float64{0.0, 0.0}, activation, 0.01}
 		for _, pixel := range pixels {
 			input_vector := []float64{pixel.r, pixel.g, pixel.b}
-			switch
+			target := 0
+			if pixel.colour == currentColour {
+				target = 1
+			}
+			
 		}
-
-	}
-
 }
 
 
