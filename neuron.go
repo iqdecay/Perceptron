@@ -87,16 +87,23 @@ func (p *Pixel) determineColour() {
 func main() {
 	var pixels []Pixel
 	n := 100
+	// Generate the training set
 	for i := 0; i< n; i++ {
 		r, g, b := generateRGB()
 		pixel := Pixel{RGB{r, g, b}, [3]int{0, 0, 0}}
 		pixel.determineColour()
 		pixels = append(pixels, pixel)
 	}
-	for _, p := range pixels {
-		fmt.Println(p.r,p.g,p.b,p.colour)
+	for i := range []int{0,1,2} {
+		p := Perceptron{3, []float64{0.0, 0.0}, activation, 0.01}
+		for _, pixel := range pixels {
+			input_vector := []float64{pixel.r, pixel.g, pixel.b}
+			target := pixel.colour
+		}
 
 	}
+
+}
 
 
 
