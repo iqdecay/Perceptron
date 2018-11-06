@@ -55,7 +55,7 @@ func (p Perceptron) predict(input []float64) (float64, error) {
 }
 
 func activation(f float64) float64 {
-	// Implements the Rectified linear unit activation function
+	// Implements the Heaviside activation function
 	if f > 0 {
 		return 1
 	} else {
