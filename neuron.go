@@ -140,7 +140,7 @@ func main() {
 		pixelsTest = append(pixelsTest, pixel)
 	}
 	// Test the Perceptron
-	var correct int
+	var correct float64
 	for _, p := range pixelsTest {
 		inputVector := []float64{p.r, p.g, p.b}
 		oRed, _ := neuronRed.predict(inputVector)
@@ -156,12 +156,10 @@ func main() {
 		case oBlue:
 			colourPredicted = "blue"
 		}
-		fmt.Println(oRed, oGreen, oBlue, "\n")
-		fmt.Printf("Actual colour : %s, predicted : %s\n", p.colour, colourPredicted)
 		if p.colour == colourPredicted {
 			correct++
 		}
 
 	}
-	fmt.Println(correct)
+	fmt.Println("Accuracy : ",correct/float64(k))
 }
