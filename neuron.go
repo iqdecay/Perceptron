@@ -5,7 +5,7 @@ import (
 	"math/rand"
 )
 
-func max(a float64, values ...float64) float64{
+func max(a float64, values ...float64) float64 {
 	m := a
 	for _, val := range values {
 		if m < val {
@@ -62,7 +62,6 @@ func activation(f float64) float64 {
 	}
 }
 
-
 func generateRGB() (float64, float64, float64) {
 	r := float64(rand.Intn(256))
 	g := float64(rand.Intn(256))
@@ -85,24 +84,25 @@ type Pixel struct {
 func (p *Pixel) determineColour() {
 	// The max is unique thanks to the generateRGB function
 	m := max(p.r, p.g, p.b)
-	if p.r == m {
+	switch m {
+	case p.r:
 		p.colour = "red"
-	}
-	if p.g == m {
+	case p.g:
 		p.colour = "green"
-	}
-	if p.b == m {
+	case p.b:
 		p.colour = "blue"
+	default:
+		fmt.Errorf("There is no colour !!!")
 	}
 }
 
 func main() {
 	var pixels []Pixel
-	n := 100
+	n := 10000
 	// Generate the training set
 	for i := 0; i < n; i++ {
 		r, g, b := generateRGB()
-		pixel := Pixel{RGB{r, g, b}, [3]int{0, 0, 0}}
+		pixel := Pixel{RGB{r, g, b}, ""}
 		pixel.determineColour()
 		pixels = append(pixels, pixel)
 	}
@@ -114,31 +114,55 @@ func main() {
 	// Training all the perceptrons
 	for _, p := range pixels {
 		inputVector := []float64{p.r, p.g, p.b}
-		targetRed, targetGreen, targetBlue := 0, 0, 0
+		var targetRed, targetGreen, targetBlue  float64
 		// We set the target depending on the pixel's colour
 		switch p.colour {
 		case "red":
-			targetRed = 1
+			targetRed = 1.
 		case "green":
-			targetGreen = 1
+			targetGreen = 1.
 		case "blue":
-			targetBlue = 1
+			targetBlue = 1.
 		default:
 			fmt.Errorf("This point hasn't got the right colour")
 		}
 		(&neuronRed).updateWeights(inputVector, targetRed)
-		(&neuronBlue).updateWeights(inputVector, targetGreen)
-		(&neuronGreen).updateWeights(inputVector, targetBlue)
+		(&neuronGreen).updateWeights(inputVector, targetGreen)
+		(&neuronBlue).updateWeights(inputVector, targetBlue)
 	}
 	// Generate the testing set
 	var pixelsTest []Pixel
-	k = n/2
+	k := 50
 	for i := 0; i < k; i++ {
 		r, g, b := generateRGB()
-		pixel := Pixel{RGB{r, g, b}, [3]int{0, 0, 0}}
+		pixel := Pixel{RGB{r, g, b}, ""}
 		pixel.determineColour()
 		pixelsTest = append(pixelsTest, pixel)
 	}
 	// Test the Perceptron
+	var correct int
+	for _, p := range pixelsTest {
+		inputVector := []float64{p.r, p.g, p.b}
+		oRed, _ := neuronRed.predict(inputVector)
+		oGreen, _ := neuronGreen.predict(inputVector)
+		oBlue, _ := neuronBlue.predict(inputVector)
+		m := max(oRed, oGreen, oBlue)
+		var colourPredicted string
+		switch m {
+		case oRed :
+			colourPredicted = "red"
+		case oGreen :
+			colourPredicted = "green"
+		case oBlue :
+			colourPredicted = "blue"
+		}
+		fmt.Println(oRed, oGreen, oBlue, "\n")
+		fmt.Printf("Actual colour : %s, predicted : %s\n", p.colour, colourPredicted)
+		if p.colour == colourPredicted {
+			correct ++
+		}
 
+
+	}
+	fmt.Println(correct)
 }
