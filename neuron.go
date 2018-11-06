@@ -114,7 +114,7 @@ func main() {
 	// Training all the perceptrons
 	for _, p := range pixels {
 		inputVector := []float64{p.r, p.g, p.b}
-		var targetRed, targetGreen, targetBlue  float64
+		var targetRed, targetGreen, targetBlue float64
 		// We set the target depending on the pixel's colour
 		switch p.colour {
 		case "red":
@@ -149,19 +149,18 @@ func main() {
 		m := max(oRed, oGreen, oBlue)
 		var colourPredicted string
 		switch m {
-		case oRed :
+		case oRed:
 			colourPredicted = "red"
-		case oGreen :
+		case oGreen:
 			colourPredicted = "green"
-		case oBlue :
+		case oBlue:
 			colourPredicted = "blue"
 		}
 		fmt.Println(oRed, oGreen, oBlue, "\n")
 		fmt.Printf("Actual colour : %s, predicted : %s\n", p.colour, colourPredicted)
 		if p.colour == colourPredicted {
-			correct ++
+			correct++
 		}
-
 
 	}
 	fmt.Println(correct)
