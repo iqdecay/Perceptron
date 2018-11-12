@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
-    "time"
+	"time"
 )
 
 func max(a float64, values ...float64) float64 {
@@ -14,6 +14,40 @@ func max(a float64, values ...float64) float64 {
 		}
 	}
 	return m
+}
+
+type RGB struct {
+	r, g, b float64
+}
+
+type Pixel struct {
+	RGB
+	colour string
+}
+
+func generateRGB() (float64, float64, float64) {
+	r := float64(rand.Intn(256))
+	g := float64(rand.Intn(256))
+	b := float64(rand.Intn(256))
+	if r == g || r == b || b == g {
+		return generateRGB()
+	}
+	return r, g, b
+}
+
+func (p *Pixel) determineColour() {
+	// The max is unique thanks to the generateRGB function
+	m := max(p.r, p.g, p.b)
+	switch m {
+	case p.g:
+		p.colour = "green"
+	case p.b:
+		p.colour = "blue"
+	case p.r:
+		p.colour = "red"
+	default:
+		fmt.Errorf("There is no colour !!!")
+	}
 }
 
 type Perceptron struct {
@@ -63,45 +97,11 @@ func activation(f float64) float64 {
 	}
 }
 
-func generateRGB() (float64, float64, float64) {
-	r := float64(rand.Intn(256))
-	g := float64(rand.Intn(256))
-	b := float64(rand.Intn(256))
-	if r == g || r == b || b == g {
-		return generateRGB()
-	}
-	return r, g, b
-}
-
-type RGB struct {
-	r, g, b float64
-}
-
-type Pixel struct {
-	RGB
-	colour string
-}
-
-func (p *Pixel) determineColour() {
-	// The max is unique thanks to the generateRGB function
-	m := max(p.r, p.g, p.b)
-	switch m {
-	case p.r:
-		p.colour = "red"
-	case p.g:
-		p.colour = "green"
-	case p.b:
-		p.colour = "blue"
-	default:
-		fmt.Errorf("There is no colour !!!")
-	}
-}
-
 func main() {
-    seed := time.Now().UnixNano()
-    rand.Seed(seed)
+	seed := time.Now().UnixNano()
+	rand.Seed(seed)
 	var pixels []Pixel
-	n := 10000
+	n := 100000
 	// Generate the training set
 	for i := 0; i < n; i++ {
 		r, g, b := generateRGB()
@@ -110,7 +110,7 @@ func main() {
 		pixels = append(pixels, pixel)
 	}
 	// Create a perceptron for each colour
-	defaultWeights := []float64{0.0, 0.0, 0.0}
+	defaultWeights := []float64{0.1, 0.1, 0.1}
 	learningRate := 0.01
 	neuronRed := Perceptron{3, defaultWeights, 0, activation, learningRate}
 	neuronGreen := Perceptron{3, defaultWeights, 0, activation, learningRate}
@@ -121,10 +121,10 @@ func main() {
 		var targetRed, targetGreen, targetBlue float64
 		// We set the target depending on the pixel's colour
 		switch p.colour {
-		case "red":
-			targetRed = 1.
 		case "green":
 			targetGreen = 1.
+		case "red":
+			targetRed = 1.
 		case "blue":
 			targetBlue = 1.
 		default:
@@ -135,12 +135,12 @@ func main() {
 		(&neuronBlue).updateWeights(inputVector, targetBlue)
 
 	}
-    fmt.Println(neuronRed.weights)
-    fmt.Println(neuronBlue.weights)
-    fmt.Println(neuronGreen.weights)
+	fmt.Println(neuronRed.weights)
+	fmt.Println(neuronBlue.weights)
+	fmt.Println(neuronGreen.weights)
 	// Generate the testing set
 	var pixelsTest []Pixel
-	k := 100
+	k := 1000
 	for i := 0; i < k; i++ {
 		r, g, b := generateRGB()
 		pixel := Pixel{RGB{r, g, b}, ""}
@@ -148,6 +148,8 @@ func main() {
 		pixelsTest = append(pixelsTest, pixel)
 	}
 	// Test the Perceptron
+	var actualRed, actualGreen, actualBlue int
+	var pRed, pGreen, pBlue int
 	var correct float64
 	for _, p := range pixelsTest {
 		inputVector := []float64{p.r, p.g, p.b}
@@ -159,15 +161,29 @@ func main() {
 		switch m {
 		case oRed:
 			colourPredicted = "red"
+			pRed++
 		case oGreen:
 			colourPredicted = "green"
+			pGreen++
 		case oBlue:
 			colourPredicted = "blue"
+			pBlue++
 		}
 		if p.colour == colourPredicted {
 			correct++
 		}
+		switch p.colour {
+		case "red":
+			actualRed++
+		case "green":
+			actualGreen++
+		case "blue":
+			actualBlue++
+		}
 
 	}
-	fmt.Println("Accuracy : ",correct/float64(k))
+	fmt.Println("Accuracy : ", correct/float64(k))
+	fmt.Println("Red : ", actualRed, pRed)
+	fmt.Println("Green : ", actualGreen, pGreen)
+	fmt.Println("Blue : ", actualBlue, pBlue)
 }
