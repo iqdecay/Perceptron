@@ -97,7 +97,7 @@ func activation(f float64) float64 {
 	}
 }
 
-func main() {
+func test() ([]float64){
 	seed := time.Now().UnixNano()
 	rand.Seed(seed)
 	var pixels []Pixel
@@ -148,16 +148,16 @@ func main() {
 		pixelsTest = append(pixelsTest, pixel)
 	}
 	// Test the Perceptron
-	var actualRed, actualGreen, actualBlue int
-	var pRed, pGreen, pBlue int
+	var actualRed, actualGreen, actualBlue float64
+	var pRed, pGreen, pBlue float64
 	var correct float64
 	for _, p := range pixelsTest {
 		inputVector := []float64{p.r, p.g, p.b}
-		oRed, _ := neuronRed.predict(inputVector)
 		oGreen, _ := neuronGreen.predict(inputVector)
 		oBlue, _ := neuronBlue.predict(inputVector)
-		m := max(oRed, oGreen, oBlue)
+		oRed, _ := neuronRed.predict(inputVector)
 		var colourPredicted string
+		m := max(oRed, oGreen, oBlue)
 		switch m {
 		case oRed:
 			colourPredicted = "red"
@@ -186,4 +186,20 @@ func main() {
 	fmt.Println("Red : ", actualRed, pRed)
 	fmt.Println("Green : ", actualGreen, pGreen)
 	fmt.Println("Blue : ", actualBlue, pBlue)
+    return []float64{actualRed, pRed, actualGreen, pGreen, actualBlue, pBlue, correct}
 }
+
+
+func main() {
+    var result []float64
+    var results [7]float64
+    for i := 0; i<10; i++ {
+        result = test()
+        for k, _ := range(results) {
+            results[k] += result[k]
+        }
+    }
+    fmt.Println(results)
+}
+
+
