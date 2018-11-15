@@ -97,7 +97,12 @@ func activation(f float64) float64 {
 	}
 }
 
-func test() ([]float64){
+func randomColour() string {
+	r := rand.Intn(3)
+	return [3]string{"red", "blue", "green"}[r]
+}
+
+func test() []float64 {
 	seed := time.Now().UnixNano()
 	rand.Seed(seed)
 	var pixels []Pixel
@@ -135,9 +140,6 @@ func test() ([]float64){
 		(&neuronBlue).updateWeights(inputVector, targetBlue)
 
 	}
-	fmt.Println(neuronRed.weights)
-	fmt.Println(neuronBlue.weights)
-	fmt.Println(neuronGreen.weights)
 	// Generate the testing set
 	var pixelsTest []Pixel
 	k := 1000
@@ -157,17 +159,25 @@ func test() ([]float64){
 		oBlue, _ := neuronBlue.predict(inputVector)
 		oRed, _ := neuronRed.predict(inputVector)
 		var colourPredicted string
+		outputSum := oRed + oGreen + oBlue
 		m := max(oRed, oGreen, oBlue)
-		switch m {
-		case oRed:
-			colourPredicted = "red"
-			pRed++
-		case oGreen:
-			colourPredicted = "green"
-			pGreen++
-		case oBlue:
-			colourPredicted = "blue"
-			pBlue++
+		if outputSum < 2 {
+			switch m {
+			// WARNING : this switch doesn't take into account ambiguous predictions
+			case oRed:
+				colourPredicted = "red"
+				pRed++
+			case oGreen:
+				colourPredicted = "green"
+				pGreen++
+			case oBlue:
+				colourPredicted = "blue"
+				pBlue++
+			}
+		} else {
+			colourPredicted = randomColour()
+            fmt.Println(inputVector, oRed, oGreen, oBlue)
+
 		}
 		if p.colour == colourPredicted {
 			correct++
@@ -182,24 +192,21 @@ func test() ([]float64){
 		}
 
 	}
-	fmt.Println("Accuracy : ", correct/float64(k))
-	fmt.Println("Red : ", actualRed, pRed)
-	fmt.Println("Green : ", actualGreen, pGreen)
-	fmt.Println("Blue : ", actualBlue, pBlue)
-    return []float64{actualRed, pRed, actualGreen, pGreen, actualBlue, pBlue, correct}
+	//fmt.Println("Accuracy : ", correct/float64(k))
+	//fmt.Println("Red : ", actualRed, pRed)
+	//fmt.Println("Green : ", actualGreen, pGreen)
+	//fmt.Println("Blue : ", actualBlue, pBlue)
+	return []float64{actualRed, pRed, actualGreen, pGreen, actualBlue, pBlue, correct}
 }
-
 
 func main() {
-    var result []float64
-    var results [7]float64
-    for i := 0; i<10; i++ {
-        result = test()
-        for k, _ := range(results) {
-            results[k] += result[k]
-        }
-    }
-    fmt.Println(results)
+	var result []float64
+	var results [7]float64
+	for i := 0; i < 10; i++ {
+		result = test()
+		for k, _ := range results {
+			results[k] += result[k]
+		}
+	}
+	fmt.Println(results)
 }
-
-
