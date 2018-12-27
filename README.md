@@ -4,7 +4,7 @@ of what a perceptron is (based on the 1957 definition : https://en.wikipedia.org
 of my ability to develop it in a language I'm learning (Go).
 
 ## TODO :
-- [ ] Add the notion of layer
+- [ ] Add a layer builder
 - [ ] Stack layers on top of each others
 - [ ] Find a test set that can be used in that case
 - [ ] Implement it
