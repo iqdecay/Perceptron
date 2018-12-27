@@ -117,9 +117,9 @@ func test() []float64 {
 	// Create a perceptron for each colour
 	defaultWeights := []float64{0.1, 0.1, 0.1}
 	learningRate := 0.01
-	neuronRed := Perceptron{3, defaultWeights, 0, activation, learningRate}
-	neuronGreen := Perceptron{3, defaultWeights, 0, activation, learningRate}
-	neuronBlue := Perceptron{3, defaultWeights, 0, activation, learningRate}
+	neuronRed := Perceptron{3, defaultWeights, 1, activation, learningRate}
+	neuronGreen := Perceptron{3, defaultWeights, 2, activation, learningRate}
+	neuronBlue := Perceptron{3, defaultWeights, 3, activation, learningRate}
 	// Training all the perceptrons
 	for _, p := range pixels {
 		inputVector := []float64{p.r, p.g, p.b}
