@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"time"
 )
@@ -53,7 +54,17 @@ func (p *Perceptron) train(data []labeledDataPoint) {
 	}
 }
 
-func generateDataset(size, splitRate int) (d dat)
+func generateDataset(size, splitRate int) (d DataSet) {
+	// splitRate is the proportion of the dataset that is used for testing
+	seed := time.Now().UnixNano()
+	rand.Seed(seed)
+	trainingSize := int(math.Floor(float64(size * (1 - splitRate/100))))
+	testingSize := size - trainingSize
+
+	var testingSet, trainingSet []labeledDataPoint
+	for i := 0; i <
+
+}
 
 func activation(f float64) float64 {
 	// Implements the Rectified linear unit activation function
@@ -64,12 +75,19 @@ func activation(f float64) float64 {
 	}
 }
 
+// TODO : add a function to generate a dataPoint
 type dataPoint struct {
 	// A data point is anything that can be used for binary classification
 	dimension int
 	data      []float64 // data should be of length dimension
 }
 
+func generateDataPoint() dataPoint {
+	a, b := float64(rand.Intn(100)), float64(rand.Intn(100))
+	return dataPoint{size: 2, data: []float64{a, b}}
+}
+
+// TODO : add a method for dataPoint that determines its label
 type labeledDataPoint struct {
 	dataPoint
 	label float64
@@ -81,8 +99,6 @@ type DataSet struct {
 }
 
 func main() {
-	seed := time.Now().UnixNano()
-	rand.Seed(seed)
 	a, b := rand.Float64(), rand.Float64()
 	p := Perceptron{2, []float64{a, b}, 0, activation, 0.01}
 
