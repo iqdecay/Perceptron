@@ -58,11 +58,20 @@ func generateDataset(size, splitRate int) (d DataSet) {
 	// splitRate is the proportion of the dataset that is used for testing
 	seed := time.Now().UnixNano()
 	rand.Seed(seed)
-	trainingSize := int(math.Floor(float64(size * (1 - splitRate/100))))
-	testingSize := size - trainingSize
 
-	var testingSet, trainingSet []labeledDataPoint
-	for i := 0; i <
+	trainingSize := int(math.Floor(float64(size * (1 - splitRate/100))))
+	trainingSet := make([]labeledDataPoint, trainingSize)
+
+	testingSize := size - trainingSize
+	testingSet := make([]labeledDataPoint, testingSize)
+
+	var point dataPoint
+	var labeledPoint labeledDataPoint
+	for i := 0; i < trainingSize; i++ {
+		point = generateDataPoint()
+		(&point).computeLabel()
+
+	}
 
 }
 
@@ -82,6 +91,10 @@ type dataPoint struct {
 	data      []float64 // data should be of length dimension
 }
 
+func (p dataPoint) computeLabel() float64{
+	return 1.0
+}
+
 func generateDataPoint() dataPoint {
 	a, b := float64(rand.Intn(100)), float64(rand.Intn(100))
 	return dataPoint{size: 2, data: []float64{a, b}}
@@ -99,6 +112,7 @@ type DataSet struct {
 }
 
 func main() {
+	seed := time.Now().UnixNano()
 	a, b := rand.Float64(), rand.Float64()
 	p := Perceptron{2, []float64{a, b}, 0, activation, 0.01}
 
