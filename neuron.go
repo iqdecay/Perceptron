@@ -48,7 +48,7 @@ func (p Perceptron) predict(input []float64) (float64, error) {
 func (p *Perceptron) train(data []labeledDataPoint) {
 	// Train the perceptron with labeled data
 	for _, point := range data {
-		inputVector := []float64{point.X, point.Y}
+		inputVector := point.data
 		target := point.label
 		p.updateWeights(inputVector, target)
 	}
@@ -65,7 +65,6 @@ func generateDataset(size, splitRate int) (d DataSet) {
 	testingSize := size - trainingSize
 	testingSet := make([]labeledDataPoint, testingSize)
 
-
 	// Generate trainingSet
 	for i := 0; i < trainingSize; i++ {
 		// Generate a labeled DataPoint and add it to the dataset
@@ -79,7 +78,7 @@ func generateDataset(size, splitRate int) (d DataSet) {
 
 	}
 
-	return DataSet{training:trainingSet, testing:testingSet}
+	return DataSet{training: trainingSet, testing: testingSet}
 
 }
 
@@ -98,13 +97,13 @@ type dataPoint struct {
 	data      []float64 // data should be of length dimension
 }
 
-func (p dataPoint) computeLabel() float64{
+func (p dataPoint) computeLabel() float64 {
 	return 1.0
 }
 
 func generateDataPoint() dataPoint {
 	a, b := float64(rand.Intn(100)), float64(rand.Intn(100))
-	return dataPoint{size: 2, data: []float64{a, b}}
+	return dataPoint{dimension: 2, data: []float64{a, b}}
 }
 
 func generateLabeledDataPoint() labeledDataPoint {
@@ -130,6 +129,8 @@ type DataSet struct {
 
 func main() {
 	seed := time.Now().UnixNano()
+	rand.Seed(seed)
+	a, b := rand.Float64(), rand.Float64()
 	p := Perceptron{2, []float64{a, b}, 0, activation, 0.01}
 	dataset := generateDataset(100, 20)
 	// Train the perceptron
