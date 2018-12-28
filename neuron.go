@@ -43,6 +43,15 @@ func (p Perceptron) predict(input []float64) (float64, error) {
 	return output, nil
 }
 
+func (p *Perceptron) train(data []colouredPoint) {
+	// Train the perceptron with labeled data
+	for _, point := range data {
+		inputVector := []float64{point.X, point.Y}
+		target := point.colour
+		p.updateWeights(inputVector, target)
+	}
+}
+
 func activation(f float64) float64 {
 	// Implements the Rectified linear unit activation function
 	if f > 0 {
@@ -62,11 +71,12 @@ type colouredPoint struct {
 }
 
 func main() {
-	p := Perceptron{2, []float64{0., 0.0}, 0, activation, 0.01}
+	a, b := rand.Float64(), rand.Float64()
+	p := Perceptron{2, []float64{a, b}, 0, activation, 0.01}
 
 	// Generate the dataset
 	var points []colouredPoint
-	n := 100
+	n := 20
 	for i := 0; i < n; i++ {
 		for j := 0; j < n; j++ {
 			var colour float64
@@ -86,22 +96,17 @@ func main() {
 	}
 
 	// Partition the dataset in training and testing set
-	n_points := len(points)
-	partition := (n_points * 8) / 10
-	training := points[:partition]
-	testing := points[partition:]
-
-	// Train the classifier
-	for _, point := range training {
-		inputVector := []float64{point.X, point.Y}
-		target := point.colour
-		(&p).updateWeights(inputVector, target)
-	}
+	nPoints := len(points)
+	partition := (nPoints * 8) / 10
+	trainingSet := points[:partition]
+	testingSet := points[partition:]
+	// Train the perceptron
+	p.train(trainingSet)
 
 	// Test the classifier
-	testCard := float64(len(testing))
+	testCard := float64(len(testingSet))
 	wrong := 0.0
-	for _, point := range testing {
+	for _, point := range testingSet {
 		inputVector := []float64{point.X, point.Y}
 		prediction, _ := p.predict(inputVector)
 		if point.colour != prediction {
