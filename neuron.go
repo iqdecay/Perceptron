@@ -16,6 +16,22 @@ type Perceptron struct {
 	learningRate float64
 }
 
+type dataPoint struct {
+	// A data point is anything that can be used for binary classification
+	dimension int
+	data      []float64 // data should be of length dimension
+}
+
+type labeledDataPoint struct {
+	dataPoint
+	label float64
+}
+
+type DataSet struct {
+	training []labeledDataPoint
+	testing  []labeledDataPoint
+}
+
 func (p *Perceptron) updateWeights(input []float64, target float64) error {
 	// Update the weigth according to input, learningRate and activation
 	var newWeights []float64
@@ -54,6 +70,35 @@ func (p *Perceptron) train(data []labeledDataPoint) {
 	}
 }
 
+func activation(f float64) float64 {
+	// Implements the Rectified linear unit activation function
+	if f > 0 {
+		return 1
+	} else {
+		return 0
+	}
+}
+
+func generateDataPoint() dataPoint {
+	a, b := float64(rand.Intn(100)), float64(rand.Intn(100))
+	return dataPoint{dimension: 2, data: []float64{a, b}}
+}
+
+func (p dataPoint) computeLabel() float64 {
+	return 1.0
+}
+
+func generateLabeledDataPoint() labeledDataPoint {
+	var point dataPoint
+	var labeledPoint labeledDataPoint
+	point = generateDataPoint()
+	label := point.computeLabel()
+	labeledPoint.dataPoint = point
+	labeledPoint.label = label
+	return labeledPoint
+
+}
+
 func generateDataset(size, splitRate int) (d DataSet) {
 	// splitRate is the proportion of the dataset that is used for testing
 	seed := time.Now().UnixNano()
@@ -61,7 +106,7 @@ func generateDataset(size, splitRate int) (d DataSet) {
 	fsize := float64(size)
 	fsplitRate := float64(splitRate)
 
-	trainingSize := int(math.RoundToEven(fsize*(1- fsplitRate/100)))
+	trainingSize := int(math.RoundToEven(fsize * (1 - fsplitRate/100)))
 	fmt.Println("trainingSize : ", trainingSize)
 	trainingSet := make([]labeledDataPoint, trainingSize)
 
@@ -85,51 +130,6 @@ func generateDataset(size, splitRate int) (d DataSet) {
 
 	return DataSet{training: trainingSet, testing: testingSet}
 
-}
-
-func activation(f float64) float64 {
-	// Implements the Rectified linear unit activation function
-	if f > 0 {
-		return 1
-	} else {
-		return 0
-	}
-}
-
-type dataPoint struct {
-	// A data point is anything that can be used for binary classification
-	dimension int
-	data      []float64 // data should be of length dimension
-}
-
-func (p dataPoint) computeLabel() float64 {
-	return 1.0
-}
-
-func generateDataPoint() dataPoint {
-	a, b := float64(rand.Intn(100)), float64(rand.Intn(100))
-	return dataPoint{dimension: 2, data: []float64{a, b}}
-}
-
-func generateLabeledDataPoint() labeledDataPoint {
-	var point dataPoint
-	var labeledPoint labeledDataPoint
-	point = generateDataPoint()
-	label := point.computeLabel()
-	labeledPoint.dataPoint = point
-	labeledPoint.label = label
-	return labeledPoint
-
-}
-
-type labeledDataPoint struct {
-	dataPoint
-	label float64
-}
-
-type DataSet struct {
-	training []labeledDataPoint
-	testing  []labeledDataPoint
 }
 
 func main() {
