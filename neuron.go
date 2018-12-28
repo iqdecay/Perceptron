@@ -75,7 +75,8 @@ type labeledDataPoint struct {
 }
 
 func main() {
-	rand.Seed(time.Now())
+	seed := time.Now().UnixNano()
+	rand.Seed(seed)
 	a, b := rand.Float64(), rand.Float64()
 	p := Perceptron{2, []float64{a, b}, 0, activation, 0.01}
 
