@@ -54,10 +54,12 @@ func (p Perceptron) predict(input []float64) (float64, error) {
 	}
 	sum := 0.0
 	sum += p.bias
+	fmt.Println("Input : ", input)
 	for i, w_i := range p.weights {
 		sum += w_i * input[i]
 	}
 	output := p.activation(sum)
+	fmt.Println("Prediction :", output)
 	return output, nil
 }
 
@@ -80,12 +82,19 @@ func activation(f float64) float64 {
 }
 
 func generateDataPoint() dataPoint {
-	a, b := float64(rand.Intn(100)), float64(rand.Intn(100))
-	return dataPoint{dimension: 2, data: []float64{a, b}}
+	a, b, c := float64(rand.Intn(200))-100, float64(rand.Intn(200))-100, float64(rand.Intn(200))-100
+	return dataPoint{dimension: 3, data: []float64{a, b, c}}
 }
 
 func (p dataPoint) computeLabel() float64 {
-	return 1.0
+	x, y := p.data[0], p.data[1]
+	// A point (x, y, z) is on the right side of the plane ((0,0,1),(1,1,0)) iff
+	// -x+1 > y
+	if -x + 1 > y {
+		return 1
+	} else {
+		return 0
+	}
 }
 
 func generateLabeledDataPoint() labeledDataPoint {
@@ -137,7 +146,8 @@ func main() {
 	rand.Seed(seed)
 	a, b := rand.Float64(), rand.Float64()
 	p := Perceptron{2, []float64{a, b}, 0, activation, 0.01}
-	dataset := generateDataset(8, 20)
+	dataset := generateDataset(10, 20)
+	//fmt.Println("Dataset :", dataset)
 	// Train the perceptron
 	p.train(dataset.training)
 
@@ -145,6 +155,7 @@ func main() {
 	testCard := float64(len(dataset.testing))
 	wrong := 0.0
 	for _, point := range dataset.testing {
+		fmt.Println(point)
 
 		inputVector := point.data
 		prediction, _ := p.predict(inputVector)
