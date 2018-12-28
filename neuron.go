@@ -146,7 +146,7 @@ func main() {
 	rand.Seed(seed)
 	a, b := rand.Float64(), rand.Float64()
 	p := Perceptron{2, []float64{a, b}, 0, activation, 0.01}
-	dataset := generateDataset(10, 20)
+	dataset := generateDataset(1000,  20)
 	//fmt.Println("Dataset :", dataset)
 	// Train the perceptron
 	p.train(dataset.training)
@@ -155,7 +155,7 @@ func main() {
 	testCard := float64(len(dataset.testing))
 	wrong := 0.0
 	for _, point := range dataset.testing {
-		fmt.Println(point)
+		//fmt.Println(point)
 
 		inputVector := point.data
 		prediction, _ := p.predict(inputVector)
