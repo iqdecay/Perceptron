@@ -65,13 +65,21 @@ func generateDataset(size, splitRate int) (d DataSet) {
 	testingSize := size - trainingSize
 	testingSet := make([]labeledDataPoint, testingSize)
 
-	var point dataPoint
-	var labeledPoint labeledDataPoint
+
+	// Generate trainingSet
 	for i := 0; i < trainingSize; i++ {
-		point = generateDataPoint()
-		(&point).computeLabel()
+		// Generate a labeled DataPoint and add it to the dataset
+		trainingSet[i] = generateLabeledDataPoint()
+	}
+
+	// Generate testingSet
+	for i := 0; i < testingSize; i++ {
+		// Generate a labeled DataPoint and add it to the datase
+		testingSet[i] = generateLabeledDataPoint()
 
 	}
+
+	return DataSet{training:trainingSet, testing:testingSet}
 
 }
 
@@ -98,6 +106,17 @@ func (p dataPoint) computeLabel() float64{
 func generateDataPoint() dataPoint {
 	a, b := float64(rand.Intn(100)), float64(rand.Intn(100))
 	return dataPoint{size: 2, data: []float64{a, b}}
+}
+
+func generateLabeledDataPoint() labeledDataPoint {
+	var point dataPoint
+	var labeledPoint labeledDataPoint
+	point = generateDataPoint()
+	label := point.computeLabel()
+	labeledPoint.dataPoint = point
+	labeledPoint.label = label
+	return labeledPoint
+
 }
 
 // TODO : add a method for dataPoint that determines its label
