@@ -58,11 +58,15 @@ func generateDataset(size, splitRate int) (d DataSet) {
 	// splitRate is the proportion of the dataset that is used for testing
 	seed := time.Now().UnixNano()
 	rand.Seed(seed)
+	fsize := float64(size)
+	fsplitRate := float64(splitRate)
 
-	trainingSize := int(math.Floor(float64(size * (1 - splitRate/100))))
+	trainingSize := int(math.RoundToEven(fsize*(1- fsplitRate/100)))
+	fmt.Println("trainingSize : ", trainingSize)
 	trainingSet := make([]labeledDataPoint, trainingSize)
 
 	testingSize := size - trainingSize
+	fmt.Println("testingSize  : ", testingSize)
 	testingSet := make([]labeledDataPoint, testingSize)
 
 	// Generate trainingSet
@@ -74,7 +78,8 @@ func generateDataset(size, splitRate int) (d DataSet) {
 	// Generate testingSet
 	for i := 0; i < testingSize; i++ {
 		// Generate a labeled DataPoint and add it to the datase
-		testingSet[i] = generateLabeledDataPoint()
+		o := generateLabeledDataPoint()
+		testingSet[i] = o
 
 	}
 
@@ -132,7 +137,7 @@ func main() {
 	rand.Seed(seed)
 	a, b := rand.Float64(), rand.Float64()
 	p := Perceptron{2, []float64{a, b}, 0, activation, 0.01}
-	dataset := generateDataset(100, 20)
+	dataset := generateDataset(8, 20)
 	// Train the perceptron
 	p.train(dataset.training)
 
@@ -140,6 +145,7 @@ func main() {
 	testCard := float64(len(dataset.testing))
 	wrong := 0.0
 	for _, point := range dataset.testing {
+
 		inputVector := point.data
 		prediction, _ := p.predict(inputVector)
 		if point.label != prediction {
