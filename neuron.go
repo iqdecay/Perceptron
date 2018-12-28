@@ -53,6 +53,7 @@ func (p *Perceptron) train(data []labeledDataPoint) {
 	}
 }
 
+func generateDataset(size, splitRate int) (d dat)
 
 func activation(f float64) float64 {
 	// Implements the Rectified linear unit activation function
@@ -64,14 +65,19 @@ func activation(f float64) float64 {
 }
 
 type dataPoint struct {
-	// A data point is anything that can be used for binary classification. Its representation should be
-	// easily convertible into []float64
-	X, Y float64
+	// A data point is anything that can be used for binary classification
+	dimension int
+	data      []float64 // data should be of length dimension
 }
 
 type labeledDataPoint struct {
 	dataPoint
 	label float64
+}
+
+type DataSet struct {
+	training []labeledDataPoint
+	testing  []labeledDataPoint
 }
 
 func main() {
