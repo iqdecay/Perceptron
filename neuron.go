@@ -53,8 +53,7 @@ func activation(f float64) float64 {
 }
 
 type Point struct {
-	X float64
-	Y float64
+	X, Y float64
 }
 
 type colouredPoint struct {
@@ -63,6 +62,9 @@ type colouredPoint struct {
 }
 
 func main() {
+	p := Perceptron{2, []float64{0., 0.0}, 0, activation, 0.01}
+
+	// Generate the dataset
 	var points []colouredPoint
 	n := 100
 	for i := 0; i < n; i++ {
@@ -82,20 +84,21 @@ func main() {
 		j := rand.Intn(i + 1)
 		points[i], points[j] = points[j], points[i]
 	}
-	p := Perceptron{2, []float64{0., 0.0}, 0, activation, 0.01}
+
+	// Partition the dataset in training and testing set
 	n_points := len(points)
 	partition := (n_points * 8) / 10
-	fmt.Println(partition)
 	training := points[:partition]
 	testing := points[partition:]
+
+	// Train the classifier
 	for _, point := range training {
 		inputVector := []float64{point.X, point.Y}
 		target := point.colour
 		(&p).updateWeights(inputVector, target)
 	}
-	fmt.Println(p.weights)
-	fmt.Println(len(testing))
 
+	// Test the classifier
 	testCard := float64(len(testing))
 	wrong := 0.0
 	for _, point := range testing {
