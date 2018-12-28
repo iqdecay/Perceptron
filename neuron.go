@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"time"
 )
 
 type Perceptron struct {
@@ -43,11 +44,11 @@ func (p Perceptron) predict(input []float64) (float64, error) {
 	return output, nil
 }
 
-func (p *Perceptron) train(data []colouredPoint) {
+func (p *Perceptron) train(data []labeledDataPoint) {
 	// Train the perceptron with labeled data
 	for _, point := range data {
 		inputVector := []float64{point.X, point.Y}
-		target := point.colour
+		target := point.label
 		p.updateWeights(inputVector, target)
 	}
 }
@@ -63,30 +64,33 @@ func activation(f float64) float64 {
 }
 
 type dataPoint struct {
+	// A data point is anything that can be used for binary classification. Its representation should be
+	// easily convertible into []float64
 	X, Y float64
 }
 
 type labeledDataPoint struct {
 	dataPoint
-	label bool
+	label float64
 }
 
 func main() {
+	rand.Seed(time.Now())
 	a, b := rand.Float64(), rand.Float64()
 	p := Perceptron{2, []float64{a, b}, 0, activation, 0.01}
 
 	// Generate the dataset
-	var points []colouredPoint
-	n := 20
+	var points []labeledDataPoint
+	n := 5
 	for i := 0; i < n; i++ {
 		for j := 0; j < n; j++ {
 			var colour float64
 			if i < j {
-				colour = 1
-				points = append(points, colouredPoint{Point{float64(i), float64(j)}, colour})
+				colour = 1.
+				points = append(points, labeledDataPoint{dataPoint{float64(i), float64(j)}, colour})
 			} else if i > j {
-				colour = 0
-				points = append(points, colouredPoint{Point{float64(i), float64(j)}, colour})
+				colour = 0.
+				points = append(points, labeledDataPoint{dataPoint{float64(i), float64(j)}, colour})
 			}
 		}
 	}
@@ -110,7 +114,7 @@ func main() {
 	for _, point := range testingSet {
 		inputVector := []float64{point.X, point.Y}
 		prediction, _ := p.predict(inputVector)
-		if point.colour != prediction {
+		if point.label != prediction {
 			wrong += 1
 		}
 	}
