@@ -52,6 +52,7 @@ func (p *Perceptron) train(data []colouredPoint) {
 	}
 }
 
+
 func activation(f float64) float64 {
 	// Implements the Rectified linear unit activation function
 	if f > 0 {
@@ -61,13 +62,13 @@ func activation(f float64) float64 {
 	}
 }
 
-type Point struct {
+type dataPoint struct {
 	X, Y float64
 }
 
-type colouredPoint struct {
-	Point
-	colour float64
+type labeledDataPoint struct {
+	dataPoint
+	label bool
 }
 
 func main() {
