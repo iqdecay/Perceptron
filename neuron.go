@@ -92,7 +92,6 @@ func activation(f float64) float64 {
 	}
 }
 
-// TODO : add a function to generate a dataPoint
 type dataPoint struct {
 	// A data point is anything that can be used for binary classification
 	dimension int
@@ -119,7 +118,6 @@ func generateLabeledDataPoint() labeledDataPoint {
 
 }
 
-// TODO : add a method for dataPoint that determines its label
 type labeledDataPoint struct {
 	dataPoint
 	label float64
@@ -132,43 +130,16 @@ type DataSet struct {
 
 func main() {
 	seed := time.Now().UnixNano()
-	a, b := rand.Float64(), rand.Float64()
 	p := Perceptron{2, []float64{a, b}, 0, activation, 0.01}
-
-	// Generate the dataset
-	var points []labeledDataPoint
-	n := 5
-	for i := 0; i < n; i++ {
-		for j := 0; j < n; j++ {
-			var colour float64
-			if i < j {
-				colour = 1.
-				points = append(points, labeledDataPoint{dataPoint{float64(i), float64(j)}, colour})
-			} else if i > j {
-				colour = 0.
-				points = append(points, labeledDataPoint{dataPoint{float64(i), float64(j)}, colour})
-			}
-		}
-	}
-	// Fisher-Yates shuffle
-	for i := range points {
-		j := rand.Intn(i + 1)
-		points[i], points[j] = points[j], points[i]
-	}
-
-	// Partition the dataset in training and testing set
-	nPoints := len(points)
-	partition := (nPoints * 8) / 10
-	trainingSet := points[:partition]
-	testingSet := points[partition:]
+	dataset := generateDataset(100, 20)
 	// Train the perceptron
-	p.train(trainingSet)
+	p.train(dataset.training)
 
 	// Test the classifier
-	testCard := float64(len(testingSet))
+	testCard := float64(len(dataset.testing))
 	wrong := 0.0
-	for _, point := range testingSet {
-		inputVector := []float64{point.X, point.Y}
+	for _, point := range dataset.testing {
+		inputVector := point.data
 		prediction, _ := p.predict(inputVector)
 		if point.label != prediction {
 			wrong += 1
