@@ -33,7 +33,7 @@ type DataSet struct {
 }
 
 func (p *Perceptron) updateWeights(input []float64, target float64) error {
-	// Update the weigth according to input, learningRate and activation
+	// Update the weights according to input, learningRate and activation
 	var newWeights []float64
 	output, err := p.predict(input)
 	if err != nil {

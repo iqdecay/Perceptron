@@ -5,6 +5,7 @@ of my ability to develop it in a language I'm learning (Go).
 
 ## TODO :
 
+- [ ] Check the prediction algorithm
 - [ ] Fix the binary classifier
 - [ ] Generalize the binary classifier
 - [ ] Add a layer builder
